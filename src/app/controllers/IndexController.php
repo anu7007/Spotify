@@ -39,8 +39,7 @@ class IndexController extends Controller
     {
         $access = $this->session->get('access');
         $q = $this->request->getPost('q');
-
-        
+        $q=str_replace(' ','-',$q);
         if ($this->request->getPost('search')) {
             $type = $this->request->getPost('type');
             $count = count($type);
