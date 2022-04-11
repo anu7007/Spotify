@@ -60,9 +60,14 @@ class IndexController extends Controller
                     $this->view->response_Track = $this->response($access, $q, 'track');
                 }
                 if (in_array('playlists', $type)) {
-                    $response_Playlist = $this->view->response_Playlist = $this->response($access, $q, 'playlists');
+                    $this->view->response_Playlist = $this->response($access, $q, 'playlist');
+                  
+                }
+                if (in_array('episodes', $type)) {
+                    $response = $this->view->response_Episodes = $this->response($access, $q, 'episode');
                     echo '<pre>';
-                    print_r($response_Playlist);
+                    print_r($response);
+                    // die;
                 }
             }
         }
