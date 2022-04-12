@@ -1,7 +1,7 @@
 <?php
-$a=''; 
-foreach($playlist['items'] as $k=>$v){
-    $a.='<option value=' . $v['id'] .'>' . $v['name'] . '</option>';
+$a = '';
+foreach ($playlist['items'] as $k => $v) {
+    $a .= '<option value=' . $v['id'] . '>' . $v['name'] . '</option>';
 }
 // die;
 ?>
@@ -34,6 +34,48 @@ foreach($playlist['items'] as $k=>$v){
         /* overflow: hidden; */
         color: white;
     }
+
+    .typewriter {
+        color: #fff;
+        font-family: 'Times New Roman', Times, serif;
+        overflow: hidden;
+        /* Ensures the content is not revealed until the animation */
+        border-right: .15em solid orange;
+        /* The typwriter cursor */
+        white-space: nowrap;
+        /* Keeps the content on a single line */
+        margin: 0 auto;
+        /* Gives that scrolling effect as the typing happens */
+        letter-spacing: .15em;
+        /* Adjust as needed */
+        animation:
+            typing 3.5s steps(30, end),
+            blink-caret .5s step-end infinite;
+    }
+
+    /* The typing effect */
+    @keyframes typing {
+        from {
+            width: 0
+        }
+
+        to {
+            width: 210%
+        }
+    }
+
+    /* The typewriter cursor effect */
+    @keyframes blink-caret {
+
+        from,
+        to {
+            border-color: transparent
+        }
+
+        200% {
+            border-color: orange
+        }
+    }
 </style>
 
 </style>
@@ -59,9 +101,9 @@ foreach($playlist['items'] as $k=>$v){
             </div>
 
             <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-lg-8 col-xl-6">
+                <div class="col-lg-8 col-xl-10">
 
-                    <h3 class="mb-4 pb-2 pb-md-0 mb-md-3 px-md-2 float-center">Search Your favourite Album, Genre, Artists...</h3>
+                    <h3 class="typewriter">Search Your favourite Album, Genre, Artists...</h3>
 
                     <form class="px-md-2" method="POST" action="/index/search">
                         <div class="form-floating mb-3">
@@ -107,7 +149,7 @@ foreach($playlist['items'] as $k=>$v){
         // die('hey');
         foreach ($response as $key => $value) {
             foreach ($value['items'] as $f => $s) {
-                    $html .= '<div class="card" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
+                $html .= '<div class="card" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
         <div class="col">
         <div class="card-img-top bg-dark text-light" style="width: 25rem;">
         <img src=' . $s['album']['images'][1]['url'] . ' class="card-img-top" alt="img" height="350">
@@ -116,19 +158,19 @@ foreach($playlist['items'] as $k=>$v){
         <p class="card-title">' . $s['album']['release_date'] . '</p>
           <p class="card-title text-muted">by ' . $s['album']['artists'][0]['name'] . '</p>
           <form method="post" action="/index/search">
-          <input type="hidden" name="uri" value=' . $s['uri'] .'>
+          <input type="hidden" name="uri" value=' . $s['uri'] . '>
           <select id="playlist" name="playlist" class="btn btn-primary">
           <option>Add To Playlist</option>
-          '.$a.'
+          ' . $a . '
           </select>
           <input type="submit" name="addtoplaylist" class="btn btn-outline-success" style="width:auto; height:auto;" value="Submit"/>
           </form>        </div>
       </div>
       </div>
       </div>';
-                }
             }
-    
+        }
+
         echo $html;
     }
 
