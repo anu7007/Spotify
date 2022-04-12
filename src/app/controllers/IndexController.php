@@ -33,6 +33,15 @@ class IndexController extends Controller
         $access = $response['access_token'];
         $this->session->access = $access;
 
+        $clients = new Client();
+        $response = $clients->get('https://api.spotify.com/v1/me?access_token=' . $access . '');
+        $body = $response->getBody();
+        $body = json_decode($body, true);
+        $id = $body['id'];
+        $this->session->set("id", $id);
+
+
+
         $this->response->redirect('index/search');
     }
     public function searchAction()
@@ -70,6 +79,15 @@ class IndexController extends Controller
                 }
             }
         }
+            $uri=$this->request->get('uri');
+            $id = ($this->session->get('id'));
+            $clientt = new Client();
+            $response1 = $clientt->get('https://api.spotify.com/v1/users/' . $id . '/playlists?access_token=' . $access . '');
+            $playlist = $response1->getBody();
+            $playlist = json_decode($playlist, true);
+            $this->view->playlist = $playlist;
+            $this->view->uri=$uri;
+        
     }
     function response($access, $q, $type)
     {
@@ -79,5 +97,32 @@ class IndexController extends Controller
         $result = curl_exec($ch);
         $response = json_decode($result, true);
         return $response;
+    }
+    public function createPlaylistAction(){
+        $id = ($this->session->get('id'));
+        $url = "https://api.spotify.com/";
+        $val = $this->request->getpost();
+        $access = $this->session->get('access');
+        $client = new Client(
+
+            [
+                'base_uri' => $url,
+                'headers' => ['Authorization' => 'Bearer ' . $access]
+
+            ]
+        );
+        $args = [
+            'name' => $val['playlist'],
+            'description' => $val['description'],
+            'public' => 'false'
+        ];
+        $response = $client->request('POST', '/v1/users/' . $id . '/playlists', ['body' => json_encode($args)]);
+        $response =  $response->getBody();
+        $response = json_decode($response, true);
+        echo "<pre>";
+        $playlistid = ($response['id']);
+        $this->session->set("playid", $playlistid);
+        $this->response->redirect('index/search');
+
     }
 }

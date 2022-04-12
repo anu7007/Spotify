@@ -33,20 +33,34 @@
     <section class="mt-5" style="overflow: hidden;">
 
         <div class="container h-50">
+            <div class="row">
+                <label>Create Playlist</label>
+                <div class="col">
+                    <form class="px-md-2" method="POST" action="/index/createPlaylist">
+                        <input name="playlist" type="text" class="" id="floatingInput" placeholder="Playlist">
+
+                        <input name="description" type="text" class="" id="floatingInput" placeholder="Description">
+                        <input name="create" type="submit" class="btn btn-danger" id="floatingInput" placeholder="Description">
+                        <?php if ($this->session->get('msg')) {
+                            echo $msg;
+                        }
+                        ?>
+                    </form>
+                </div>
+            </div>
 
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-lg-8 col-xl-6">
 
                     <h3 class="mb-4 pb-2 pb-md-0 mb-md-3 px-md-2 float-center">Search Your favourite Album, Genre, Artists...</h3>
-                    <form class="px-md-2" method="POST" action="/index/search">
 
+                    <form class="px-md-2" method="POST" action="/index/search">
                         <div class="form-floating mb-3">
                             <input name="q" type="text" class="form-control" id="floatingInput" placeholder="Search" style="border-radius: 100px; text-align:center; display:inline">
                             <label for="floatingPassword" class="text-muted">Artists, songs, or Podcasts</label>
 
                         </div>
-                        <!-- <input type="hidden" value="<?php echo $type = ''; ?>" name="type"> -->
-                        <input type="hidden" value="<?php echo $this->session->get('access'); ?>" name="access_token">
+
 
                         <span>Filters:
                             <input type="checkbox" name='type[]' value="albums"> Album
@@ -81,28 +95,37 @@
     // die($count);
     if ($response) {
         $html = '';
+        // die('hey');
         foreach ($response as $key => $value) {
             foreach ($value['items'] as $f => $s) {
-
-                $html .= '<div class="row" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
-        <div class="col col-2">
-        <div class="card bg-dark text-light" style="width: 25rem;">
+                    foreach ($playlist['items'] as $k => $v) {
+                    $html .= '<div class="card" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
+        <div class="col">
+        <div class="card-img-top bg-dark text-light" style="width: 25rem;">
         <img src=' . $s['album']['images'][1]['url'] . ' class="card-img-top" alt="img" height="350">
         <div class="card-body ">
         <p class="card-title">' . $s['album']['name'] . '</p>
         <p class="card-title">' . $s['album']['release_date'] . '</p>
           <p class="card-title text-muted">by ' . $s['album']['artists'][0]['name'] . '</p>
-          <a href="#" class="btn btn-primary" style="width:auto; height:auto;">Add To Playlist</a>
-        </div>
+          <form method="post" action="">
+          <input type="hidden" name="uri" value=' . $s['uri'] . '/>
+          <select id="playlist" name="playlist" class="btn btn-primary">
+          <option>Add To Playlist</option>
+          <option value=' . $v['id'] .'>' . $v['name'] . '</option>
+            
+          </select>
+          <input type="submit" class="btn btn-outline-success" style="width:auto; height:auto;" value="Submit"/>
+          </form>        </div>
       </div>
       </div>
       </div>';
+                }
             }
         }
         echo $html;
     }
 
-    if($response_Album) {
+    if ($response_Album) {
         echo '<h3>Albums</h3>';
         $html = '';
         foreach ($response_Album as $key => $value) {
@@ -125,30 +148,8 @@
         }
         echo $html;
     }
-    if($response_Track) {
-        echo '<h3>Tracks</h3><br>';
-        $html = '';
-        foreach ($response_Track as $key => $value) {
-            foreach ($value['items'] as $f => $s) {
 
-                $html .= '<div class="row" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
-        <div class="col col-2">
-        <div class="card bg-dark text-light" style="width: 25rem;">
-        <img src=' . $s['album']['images'][1]['url'] . ' class="card-img-top" alt="img" height="350">
-        <div class="card-body ">
-        <p class="card-title">' . $s['album']['name'] . '</p>
-        <p class="card-title">' . $s['album']['release_date'] . '</p>
-          <p class="card-title text-muted">by ' . $s['album']['artists'][0]['name'] . '</p>
-          <a href="#" class="btn btn-primary" style="width:auto; height:auto;">Add To Playlist</a>
-        </div>
-      </div>
-      </div>
-      </div>';
-            }
-        }
-        echo $html;
-    }
-    if($response_Artist) {
+    if ($response_Artist) {
         echo '<h3>Artists</h3><br>';
         $html = '';
         foreach ($response_Artist as $key => $value) {
@@ -171,19 +172,19 @@
         echo $html;
     }
 
-    if($response_Playlist) {
+    if ($response_Playlist) {
         echo '<h3>PlayLists</h3><br>';
         $html = '';
         foreach ($response_Playlist as $key => $value) {
             foreach ($value['items'] as $f => $s) {
 
-                $html.= '<div class="row" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
+                $html .= '<div class="row" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
         <div class="col col-2">
         <div class="card bg-dark text-light" style="width: 25rem;">
         <img src=' . $s['images'][0]['url'] . ' class="card-img-top" alt="img" height="350">
         <div class="card-body ">
         <p class="card-title">' . $s['name'] . '</p>
-          <p class="card-title text-muted">by '.$s['owner']['display_name'].'</p>
+          <p class="card-title text-muted">by ' . $s['owner']['display_name'] . '</p>
           
         </div>
       </div>
@@ -193,7 +194,7 @@
         }
         echo $html;
     }
-    if($response_Track) {
+    if ($response_Track) {
         echo '<h3>Tracks</h3><br>';
         $html = '';
         foreach ($response_Track as $key => $value) {
@@ -207,7 +208,9 @@
         <p class="card-title">' . $s['album']['name'] . '</p>
         <p class="card-title">' . $s['album']['release_date'] . '</p>
           <p class="card-title text-muted">by ' . $s['album']['artists'][0]['name'] . '</p>
-          <a href="#" class="btn btn-primary" style="width:auto; height:auto;">Add To Playlist</a>
+          <form method="post" action="">
+          <input type="submit" class="btn btn-primary" style="width:auto; height:auto;" value="Add To Playlist"/>
+          </form>
         </div>
       </div>
       </div>
@@ -216,7 +219,7 @@
         }
         echo $html;
     }
-    if($response_Episodes) {
+    if ($response_Episodes) {
         echo '<h3>Episodes</h3><br>';
         $html = '';
         foreach ($response_Episodes as $key => $value) {
@@ -225,7 +228,7 @@
                 $html .= '<div class="row" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
         <div class="col col-2">
         <div class="card bg-dark text-light" style="width: 25rem;">
-        <img src=' . $s['images'][0]['url']. ' class="card-img-top" alt="img" height="350">
+        <img src=' . $s['images'][0]['url'] . ' class="card-img-top" alt="img" height="350">
         <div class="card-body ">
         <p class="card-title">' . $s['name'] . '</p>
         </div>
