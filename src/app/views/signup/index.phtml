@@ -1,0 +1,67 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<style>
+    input {
+        width: 40%;
+        /* margin-left: 20%; */
+        margin-right: 60%;
+        height: 40px;
+    }
+
+    body {
+        padding-left: 34%;
+        background-image: url('https://media.istockphoto.com/photos/closeup-nature-view-of-green-leaf-texture-dark-wallpaper-concept-picture-id1220145130?k=20&m=1220145130&s=612x612&w=0&h=888E5_xVsxh4XKxVH00raIMt98dIxHmWa0dcJjJWKZY=');
+        background-repeat: no-repeat;
+        background-size: cover;
+
+    }
+</style>
+
+<body>
+
+    <h2 class="text mt-3 text-light">Sign Up</h2>
+
+    <?php echo $this->tag->form(""); ?>
+    <div class="text-muted float-center form-group">
+        <p>
+            <label for="full_name">Full Name</label>
+            <?php echo $this->tag->textField("full_name"); ?>
+        </p>
+        <p>
+            <label for="username">User Name</label>
+            <?php echo $this->tag->textField("username"); ?>
+        </p>
+        <p>
+            <label for="email">E-Mail</label>
+            <?php echo $this->tag->textField("email"); ?>
+        </p>
+        <p>
+            <label for="password">Password</label>
+            <?php echo $this->tag->passwordField("password"); ?>
+        </p>
+        <p>
+            <label for="confrm_password">Confirm Password</label>
+            <?php echo $this->tag->passwordField("confirm_password") . '<br>'; ?>
+        </p>
+        <p>
+            <label for="dob">Date Of Birth</label>
+            <?php echo $this->tag->dateField("dob") . '<br>'; ?>
+        </p>
+        
+    </div>
+
+        <p>
+            <?php echo $this->tag->submitButton(["Register", 'name' => 'Register_btn', 'class' => 'btn btn-success mb-2 mt-3', 'style' => "width: 20%; margin-left:10%; border-radius: 10px; box-shadow: 2px 2px black;"]); ?>
+        </p>
+        <p class="text text-muted ml-5">Already have an account? <a href="http://localhost:8080/login" class="fw-bold text-body"><u>Login here</u></a></p>
+    </div>
+
+    </form>
+    <?php if ($message) { ?>
+        <div style="text-align:left; width: 40%" class="alert alert-<?php echo $success === true ? 'success' : 'danger'; ?>">
+            <?php echo $message; ?>
+            <?php echo $passwordError; ?>
+            <?php echo $emailExistsError; ?>
+        </div>
+    <?php }
+    ?>
+</body>
