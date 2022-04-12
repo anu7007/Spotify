@@ -105,7 +105,7 @@ $container->set(
                 'host'     => 'mysql-server',
                 'username' => 'root',
                 'password' => 'secret',
-                'dbname'   => 'blog',
+                'dbname'   => 'spotify',
                 ]
             );
         }
