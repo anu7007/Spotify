@@ -15,6 +15,8 @@ use Phalcon\Session\Manager;
 use Phalcon\Http\Response\Cookies;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Config\ConfigFactory;
+use Phalcon\Events\Event;
+use Phalcon\Events\Manager as EventsManager;
 require '../vendor/autoload.php';
 
 // Define some absolute path constants to aid in locating resources
@@ -32,7 +34,8 @@ $loader->registerDirs(
     ]
 );
 $loader->registerNamespaces([
-    'App\Components'=> APP_PATH.'/components',
+  
+    'App\Listeners' => APP_PATH . '/listeners'
 ]);
 
 $loader->register();
@@ -81,6 +84,17 @@ $container->set(
         $url->setBaseUri('/');
         return $url;
     }
+);
+
+$eventManager = new EventsManager();
+$eventManager->attach(
+    'spotify',
+    new App\Listeners\notificationListeners()
+);
+
+$container->set(
+    'eventManager',
+    $eventManager
 );
 
 $application = new Application($container);

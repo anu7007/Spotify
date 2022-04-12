@@ -8,6 +8,11 @@ class IndexController extends Controller
 {
     public function indexAction()
     {
+       if(!$this->session->get('email')){
+        $this->response->redirect('/login');
+
+       }
+        
     }
     public function spotifyAction()
     {
@@ -32,6 +37,24 @@ class IndexController extends Controller
         $response = json_decode($response, true);
         $access = $response['access_token'];
         $this->session->access = $access;
+        $email = $this->session->get('email');
+        $data = Users::find(
+
+            [
+                'conditions' => 'email=:email:',
+                'bind' => [
+                    'email' => $email,
+                ]
+
+            ]
+        );
+        if ($data) {
+            $data[0]->token = $access;
+            $data[0]->refresh_token = $response['refresh_token'];
+            $data[0]->update();
+            // header('location:http://localhost:8080/setting');
+        }
+
 
         $clients = new Client();
         $response = $clients->get('https://api.spotify.com/v1/me?access_token=' . $access . '');
@@ -39,8 +62,6 @@ class IndexController extends Controller
         $body = json_decode($body, true);
         $id = $body['id'];
         $this->session->set("id", $id);
-
-
 
         $this->response->redirect('index/search');
     }
@@ -107,12 +128,38 @@ class IndexController extends Controller
     }
     function response($access, $q, $type)
     {
-        $url = "https://api.spotify.com/v1/search?access_token=$access&q=$q&type=$type";
+        try {
+            $url = "https://api.spotify.com/v1/search?access_token=$access&q=$q&type=$type";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
         $response = json_decode($result, true);
         return $response;
+    } catch (ClientException $e) {
+
+
+            $email = $this->session->get('email');
+            $data = Users::find(
+
+                [
+                    'conditions' => 'email=:email:',
+                    'bind' => [
+                        'email' => $email,
+                    ]
+
+                ]
+            );
+            $token = $this->eventManager->fire('spotify:refreshToken', $this, $data);
+            echo $token;
+            $data[0]->token = $token;
+            $this->session->set("access", $data[0]->token);
+        }
+        // $url = "https://api.spotify.com/v1/search?access_token=$access&q=$q&type=$type";
+        // $ch = curl_init($url);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        // $result = curl_exec($ch);
+        // $response = json_decode($result, true);
+        // return $response;
     }
     public function createPlaylistAction()
     {

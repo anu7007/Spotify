@@ -24,28 +24,11 @@ class LoginController extends Controller
                 ));
                 if (!$user) {
                     $this->session->set('msg', "*Incorrect credentials");
-                    // return $this->dispatcher->forward(array( 
-                    //    'controller' => 'index', 'action' => 'index' 
-                    // ));
-                }
-                //  $this->session->set('auth', $user->user_id); 
-                else {
-                    if ($user->status == "pending" && $user->role == "user") {
-                        $this->session->set('msg', "!! Your Request is in Queue !!<br>Kindly wait for Approval<br><br>");
-                    } elseif ($user->status == "approved" && $user->role == "user") {
-                        $this->session->set('msg', "You are a user and with approval");
-                        $this->session->set('activeUser', $user->full_name);
-                        $this->session->set('activeRole', $user->role);
-                        header('location:/user');
-                    } else {
-                        $this->session->set('msg', "Hello ADMIN !!");
-                        $this->session->set('activeUser', $user->full_name);
-                        $this->session->set('activeRole', $user->role);
-                        header('location:/admin');
-                    }
-
-
-                    // header("location: localhost:8080/login");
+                } else {
+                    $this->session->set('msg', "Hello!!");
+                    $this->session->set('email', $user->email);
+                    $this->session->set('password', $user->password);
+                    header('location:/index');
                 }
             }
         }
