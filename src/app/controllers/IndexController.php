@@ -48,28 +48,26 @@ class IndexController extends Controller
     {
         $access = $this->session->get('access');
         $q = $this->request->getPost('q');
-        $q=str_replace(' ','-',$q);
+        $q = str_replace(' ', '-', $q);
         if ($this->request->getPost('search')) {
             $type = $this->request->getPost('type');
             $count = count($type);
             if ($count == 0) {
-                
+
                 $type = 'track';
                 $this->view->response = $this->response($access, $q, $type);
             } else {
                 if (in_array('albums', $type)) {
                     $this->view->response_Album = $this->response($access, $q, 'album');
-                    
                 }
                 if (in_array('artists', $type)) {
-                    $response_Artist=$this->view->response_Artist = $this->response($access, $q, 'artist');
+                    $response_Artist = $this->view->response_Artist = $this->response($access, $q, 'artist');
                 }
                 if (in_array('tracks', $type)) {
                     $this->view->response_Track = $this->response($access, $q, 'track');
                 }
                 if (in_array('playlists', $type)) {
                     $this->view->response_Playlist = $this->response($access, $q, 'playlist');
-                  
                 }
                 if (in_array('episodes', $type)) {
                     $response = $this->view->response_Episodes = $this->response($access, $q, 'episode');
@@ -79,15 +77,33 @@ class IndexController extends Controller
                 }
             }
         }
-            $uri=$this->request->get('uri');
-            $id = ($this->session->get('id'));
-            $clientt = new Client();
-            $response1 = $clientt->get('https://api.spotify.com/v1/users/' . $id . '/playlists?access_token=' . $access . '');
-            $playlist = $response1->getBody();
-            $playlist = json_decode($playlist, true);
-            $this->view->playlist = $playlist;
-            $this->view->uri=$uri;
-        
+        if ($this->request->getPost('addtoplaylist')) {
+            $uri = $this->request->getpost('uri');
+            $access = ($this->session->get('access'));
+            $playlistid = $this->request->getpost('playlist');
+            $url = "https://api.spotify.com/";
+            $client = new Client(
+                [
+                    'base_uri' => $url,
+                    'headers' => ['Authorization' => 'Bearer ' .$access]
+                ]
+            );
+            $response = $client->request('POST', "/v1/playlists/" . $playlistid . "/tracks?uris=".$uri);
+            echo "Track added successfully";
+            // die;
+        }
+
+
+
+        //code to send all playlists existing in users account as soon as user search any song so that user can see AD TO PLAYLIST button with all existing playlists
+        $uri = $this->request->get('uri');
+        $id = ($this->session->get('id'));
+        $clientt = new Client();
+        $response1 = $clientt->get('https://api.spotify.com/v1/users/' . $id . '/playlists?access_token=' . $access . '');
+        $playlist = $response1->getBody();
+        $playlist = json_decode($playlist, true);
+        $this->view->playlist = $playlist;
+        $this->view->uri = $uri;
     }
     function response($access, $q, $type)
     {
@@ -98,7 +114,8 @@ class IndexController extends Controller
         $response = json_decode($result, true);
         return $response;
     }
-    public function createPlaylistAction(){
+    public function createPlaylistAction()
+    {
         $id = ($this->session->get('id'));
         $url = "https://api.spotify.com/";
         $val = $this->request->getpost();
@@ -123,6 +140,5 @@ class IndexController extends Controller
         $playlistid = ($response['id']);
         $this->session->set("playid", $playlistid);
         $this->response->redirect('index/search');
-
     }
 }
