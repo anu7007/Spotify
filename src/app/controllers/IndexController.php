@@ -101,7 +101,7 @@ class IndexController extends Controller
         if ($this->request->getPost('addtoplaylist')) {
             $uri = $this->request->getpost('uri');
             $access = ($this->session->get('access'));
-            $playlistid = $this->request->getpost('playlist');
+            $playlistid = $this->request->getpost('addtoplaylist');
             $url = "https://api.spotify.com/";
             $client = new Client(
                 [

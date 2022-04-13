@@ -117,11 +117,10 @@ foreach($playlist['items'] as $k=>$v){
           <p class="card-title text-muted">by ' . $s['album']['artists'][0]['name'] . '</p>
           <form method="post" action="/index/search">
           <input type="hidden" name="uri" value=' . $s['uri'] .'>
-          <select id="playlist" name="playlist" class="btn btn-primary">
+          <select id="playlist" name="addtoplaylist" class="btn btn-primary dropdown-toggle"  onchange="this.form.submit()">
           <option>Add To Playlist</option>
           '.$a.'
           </select>
-          <input type="submit" name="addtoplaylist" class="btn btn-outline-success" style="width:auto; height:auto;" value="Submit"/>
           </form>        </div>
       </div>
       </div>
