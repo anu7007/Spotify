@@ -13,11 +13,14 @@ class notificationListeners extends Injectable
 
 public function refreshToken(Event $event, $values, $data)
     {
-        echo "hii";
-        die;
+        // echo "hii";
+        // die;
+        // echo "<pre>";
+        // print_r($data[0]);
+        // die;
 
        
-        $refresh=$data[0]->refresh;
+        $refresh=$data[0]->refresh_token;
         $clientId = "978342e86e454e4f8158c9cc2dc58458";
         $clientSecret = "c8f23a6494f84d7b9b5f3b747bd3e988";
         $url = "https://accounts.spotify.com";
