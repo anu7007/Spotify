@@ -69,6 +69,7 @@ class IndexController extends Controller
         try {
             
             $access = $this->session->get('access');
+            
             $q = $this->request->getPost('q');
             $q = str_replace(' ', '-', $q);
             if ($this->request->getPost('search')) {
@@ -77,6 +78,7 @@ class IndexController extends Controller
                 if ($count == 0) {
 
                     $type = 'track';
+                   
                     $this->view->response = $this->response($access, $q, $type);
                 } else {
                     if (in_array('albums', $type)) {
@@ -145,12 +147,12 @@ class IndexController extends Controller
 
                 ]
             );
-          
             $token = $this->eventManager->fire('spotify:refreshToken', $this, $data);
-            // echo $token;
-            $data[0]->token = $token['access_token'];
-            $this->session->set("access", $token['access_token']);
+            $data[0]->token = $token;
+            $this->session->set("access", $token);
             $access = $this->session->get('access');
+            // die($access);
+            // $this->response->redirect('/index/search');
             $q = $this->request->getPost('q');
             $q = str_replace(' ', '-', $q);
             if ($this->request->getPost('search')) {
@@ -215,6 +217,7 @@ class IndexController extends Controller
     function response($access, $q, $type)
     {
         try {
+            
             $url = "https://api.spotify.com/v1/search?access_token=$access&q=$q&type=$type";
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -222,8 +225,6 @@ class IndexController extends Controller
             $response = json_decode($result, true);
             return $response;
         } catch (ClientException $e) {
-
-            die("hii");
             $email = $this->session->get('email');
             $data = Users::find(
 
