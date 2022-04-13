@@ -1,8 +1,8 @@
 <?php
 error_reporting(0);
-$a=''; 
-foreach($playlist['items'] as $k=>$v){
-    $a.='<option value=' . $v['id'] .'>' . $v['name'] . '</option>';
+$a = '';
+foreach ($playlist['items'] as $k => $v) {
+    $a .= '<option value=' . $v['id'] . '>' . $v['name'] . '</option>';
 }
 // die;
 ?>
@@ -34,6 +34,7 @@ foreach($playlist['items'] as $k=>$v){
         background-size: cover;
         /* overflow: hidden; */
         color: white;
+
     }
 </style>
 
@@ -66,7 +67,7 @@ foreach($playlist['items'] as $k=>$v){
 
                     <form class="px-md-2" method="POST" action="/index/search">
                         <div class="form-floating mb-3">
-                            <input name="q" type="text" class="form-control" id="floatingInput" placeholder="Search" style="border-radius: 100px; text-align:center; display:inline">
+                            <input name="q" type="search" class="form-control" id="floatingInput" placeholder="Search" style="border-radius: 100px; text-align:center; display:inline">
                             <label for="floatingPassword" class="text-muted">Artists, songs, or Podcasts</label>
 
                         </div>
@@ -108,7 +109,7 @@ foreach($playlist['items'] as $k=>$v){
         // die('hey');
         foreach ($response as $key => $value) {
             foreach ($value['items'] as $f => $s) {
-                    $html .= '<div class="card" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
+                $html .= '<div class="card" style="display:inline; margin-left:1%; margin-top: 1%; float:left">
         <div class="col">
         <div class="card-img-top bg-dark text-light" style="width: 25rem;">
         <img src=' . $s['album']['images'][1]['url'] . ' class="card-img-top" alt="img" height="350">
@@ -117,18 +118,18 @@ foreach($playlist['items'] as $k=>$v){
         <p class="card-title">' . $s['album']['release_date'] . '</p>
           <p class="card-title text-muted">by ' . $s['album']['artists'][0]['name'] . '</p>
           <form method="post" action="/index/search">
-          <input type="hidden" name="uri" value=' . $s['uri'] .'>
+          <input type="hidden" name="uri" value=' . $s['uri'] . '>
           <select id="playlist" name="addtoplaylist" class="btn btn-primary dropdown-toggle"  onchange="this.form.submit()">
           <option>Add To Playlist</option>
-          '.$a.'
+          ' . $a . '
           </select>
           </form>        </div>
       </div>
       </div>
       </div>';
-                }
             }
-    
+        }
+
         echo $html;
     }
 
